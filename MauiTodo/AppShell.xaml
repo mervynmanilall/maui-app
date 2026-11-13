@@ -1,0 +1,11 @@
+<Shell
+    x:Class="MauiTodo.AppShell"
+    xmlns:local="clr-namespace:MauiTodo"
+    Title="MauiTodo">
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+</Shell>
