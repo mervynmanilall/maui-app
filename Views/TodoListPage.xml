@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiTodo.ViewModels"
+             xmlns:models="clr-namespace:MauiTodo.Models"
+             x:Class="MauiTodo.Views.TodoListPage"
+             x:DataType="vm:TodoListViewModel"
+             Title="My Todos">
+
+    <!-- No x:Name, no Clicked: everything is a {Binding} to the view model -->
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16" RowSpacing="12">
+
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <Entry Text="{Binding NewTitle}"
+                   Placeholder="What do you need to do?"
+                   ReturnType="Done"
+                   ReturnCommand="{Binding AddCommand}" />
+            <Button Grid.Column="1" Text="Add" Command="{Binding AddCommand}" />
+        </Grid>
+
+        <Label Grid.Row="1" Text="{Binding Summary}" TextColor="Gray" />
+
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="Nothing to do. Enjoy the beach!" TextColor="Gray"
+                       HorizontalOptions="Center" Margin="0,48" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TodoItem">
+                    <!-- Swipe left to reveal Delete: a native gesture on both platforms -->
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute">
+                                <!-- The row's context is a TodoItem, so we "look up" to the page's view model -->
+                                <SwipeItem Text="Delete" BackgroundColor="#DC2626"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:TodoListViewModel}}, Path=DeleteCommand, x:DataType=vm:TodoListViewModel}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <Grid ColumnDefinitions="Auto,*" Padding="4,6"
+                              BackgroundColor="{AppThemeBinding Light=White, Dark=#1F1F1F}">
+                            <CheckBox IsChecked="{Binding IsDone}" />
+                            <Label Grid.Column="1" Text="{Binding Title}" VerticalOptions="Center">
+                                <!-- A trigger: strike through finished items, no C# needed -->
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsDone}" Value="True">
+                                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                                        <Setter Property="Opacity" Value="0.5" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Grid>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
