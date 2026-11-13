@@ -1,7 +1,7 @@
-using Microsoft.Extensions.Logging;
 using MauiTodo.Services;
 using MauiTodo.ViewModels;
 using MauiTodo.Views;
+using Microsoft.Extensions.Logging;
 
 namespace MauiTodo;
 
